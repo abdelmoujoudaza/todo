@@ -88,6 +88,18 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
+    "jms/metadata": {
+        "version": "2.6.1"
+    },
+    "jms/serializer": {
+        "version": "3.17.1"
+    },
+    "knplabs/knp-menu": {
+        "version": "v3.3.0"
+    },
+    "knplabs/knp-menu-bundle": {
+        "version": "v3.2.0"
+    },
     "laminas/laminas-code": {
         "version": "4.5.1"
     },
@@ -224,6 +236,47 @@
         "files": [
             "./config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "sonata-project/admin-bundle": {
+        "version": "4.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "0e5931df1732e3dccfba42a20853049e5e9db6ae"
+        },
+        "files": [
+            "./config/packages/sonata_admin.yaml",
+            "./config/routes/sonata_admin.yaml",
+            "./src/Admin/.gitignore"
+        ]
+    },
+    "sonata-project/block-bundle": {
+        "version": "4.9.1"
+    },
+    "sonata-project/cache": {
+        "version": "2.2.0"
+    },
+    "sonata-project/doctrine-extensions": {
+        "version": "1.16.0"
+    },
+    "sonata-project/exporter": {
+        "version": "2.10.1"
+    },
+    "sonata-project/form-extensions": {
+        "version": "1.12",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.4",
+            "ref": "9c8a1e8ce2b1f215015ed16652c4ed18eb5867fd"
+        },
+        "files": [
+            "./config/packages/sonata_form.yaml"
+        ]
+    },
+    "sonata-project/twig-extensions": {
+        "version": "1.9.1"
     },
     "symfony/asset": {
         "version": "v5.4.0"
@@ -476,6 +529,9 @@
     "symfony/runtime": {
         "version": "v5.4.1"
     },
+    "symfony/security-acl": {
+        "version": "v3.2.0"
+    },
     "symfony/security-bundle": {
         "version": "5.4",
         "recipe": {
@@ -580,6 +636,28 @@
             "./config/routes/dev/web_profiler.yaml"
         ]
     },
+    "symfony/webpack-encore-bundle": {
+        "version": "1.13",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.9",
+            "ref": "d2d1e09675fff3fa4193aa9950a7c39934524a25"
+        },
+        "files": [
+            "./assets/app.js",
+            "./assets/bootstrap.js",
+            "./assets/controllers.json",
+            "./assets/controllers/hello_controller.js",
+            "./assets/styles/app.css",
+            "./config/packages/assets.yaml",
+            "./config/packages/prod/webpack_encore.yaml",
+            "./config/packages/test/webpack_encore.yaml",
+            "./config/packages/webpack_encore.yaml",
+            "./package.json",
+            "./webpack.config.js"
+        ]
+    },
     "symfony/yaml": {
         "version": "v5.4.2"
     },
@@ -588,6 +666,9 @@
     },
     "twig/extra-bundle": {
         "version": "v3.3.7"
+    },
+    "twig/string-extra": {
+        "version": "v3.3.5"
     },
     "twig/twig": {
         "version": "v3.3.7"
