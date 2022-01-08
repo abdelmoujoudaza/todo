@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -41,6 +43,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="boolean")
      */
     private $isVerified = false;
+
+    /**
+     * @ORM\Column(name="google_id", type="string", length=255, nullable=true, options={"default"="NULL"})
+     */
+    private $googleId;
+
+    /**
+     * @ORM\Column(name="google_access_token", type="string", length=255, nullable=true, options={"default"="NULL"})
+     */
+    private $googleAccessToken;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserTodo::class, mappedBy="user")
+     */
+    private $userTodos;
+
+    public function __construct()
+    {
+        $this->todos = new ArrayCollection();
+        $this->userTodos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -139,6 +162,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId($googleId): self
+    {
+        $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    public function getGoogleAccessToken(): ?string
+    {
+        return $this->googleAccessToken;
+    }
+
+    public function setGoogleAccessToken($googleAccessToken): self
+    {
+        $this->googleAccessToken = $googleAccessToken;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserTodo[]
+     */
+    public function getUserTodos(): Collection
+    {
+        return $this->userTodos;
+    }
+
+    public function addUserTodo(UserTodo $userTodo): self
+    {
+        if (!$this->userTodos->contains($userTodo)) {
+            $this->userTodos[] = $userTodo;
+            $userTodo->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserTodo(UserTodo $userTodo): self
+    {
+        if ($this->userTodos->removeElement($userTodo)) {
+            // set the owning side to null (unless already changed)
+            if ($userTodo->getUser() === $this) {
+                $userTodo->setUser(null);
+            }
+        }
 
         return $this;
     }

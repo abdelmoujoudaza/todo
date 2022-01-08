@@ -25,13 +25,21 @@
                         <div class="row mb-3">
                             <label for="email" class="col-md-4 col-form-label text-md-end">{{ 'Email' }} :</label>
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ last_email }}" required autocomplete="email" autofocus>
+                                <input id="email" type="email" class="form-control border border-black-50" name="email" value="{{ last_email }}" required autocomplete="email" autofocus>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="password" class="col-md-4 col-form-label text-md-end">{{ 'Mot de passe' }} :</label>
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required autocomplete="current-password">
+                                <input id="password" type="password" class="form-control border border-black-50" name="password" required autocomplete="current-password">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6 offset-md-4">
+                                <a class="btn bg-white border border-black-50 rounded text-left w-100" href="{{ path('connect_google_start') }}">
+                                    <img src="{{ asset('icons/icon-google.png') }}" class="icon-google" />
+                                    {{ 'Sign in with Google' }}
+                                </a>
                             </div>
                         </div>
                         <div class="row mb-0">

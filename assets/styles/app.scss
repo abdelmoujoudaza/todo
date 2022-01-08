@@ -2,8 +2,5 @@
     background-color: lightgray;
 } */
 
-.h-screen {
-    height: 100vh;
-}
-
-@import 'global.scss'
+@import 'global.scss';
+@import 'login.scss';

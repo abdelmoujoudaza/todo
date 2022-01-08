@@ -20,7 +20,7 @@ class AuthController extends AbstractController
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
-        dump($error);
+
         // last email entered by the user
         $lastEmail = $authenticationUtils->getLastUsername();
 
