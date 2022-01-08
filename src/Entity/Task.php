@@ -25,7 +25,7 @@ class Task
     /**
      * @ORM\Column(type="boolean", options={"default" : false})
      */
-    private $completed;
+    private $completed = false;
 
     /**
      * @ORM\ManyToOne(targetEntity=Todo::class, inversedBy="tasks")

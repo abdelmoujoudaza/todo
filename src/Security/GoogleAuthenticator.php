@@ -66,6 +66,7 @@ class GoogleAuthenticator extends OAuth2Authenticator
                 }
 
                 $user->setGoogleId($googleUser->getId())
+                    ->setName($googleUser->getName())
                     ->setGoogleAccessToken($accessToken)
                     ->setIsVerified(true);
                 $this->entityManager->persist($user);

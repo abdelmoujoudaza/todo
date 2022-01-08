@@ -13,12 +13,21 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('name', TextType::class, [
+                'label' => 'Nom',
+                'invalid_message' => 'Veuillez entrer votre nom.',
+                'attr' => [
+                    'placeholder' => 'votre nom',
+                    'class' => 'form-control'
+                ]
+            ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'invalid_message' => 'Veuillez entrer un email valide.',

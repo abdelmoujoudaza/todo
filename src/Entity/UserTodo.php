@@ -20,7 +20,7 @@ class UserTodo
     /**
      * @ORM\Column(type="boolean", options={"default" : false})
      */
-    private $isOwner;
+    private $isOwner = false;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userTodos")

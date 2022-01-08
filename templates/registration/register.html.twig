@@ -10,18 +10,24 @@
                 <div class="card-header">{{ 'Création de compte' }}</div>
                 <div class="card-body">
                     {{ form_start(form) }}
-                        {# {% for flashError in app.flashes('verify_email_error') %}
-                            <div class="alert alert-danger" role="alert">{{ flashError }}</div>
-                        {% endfor %} #}
+                        {% if(form_errors(form.name)) %}
+                            <div class="alert alert-danger" role="alert">{{ form_errors(form.name) }}</div>
+                        {% endif %}
                         {% if(form_errors(form.email)) %}
                             <div class="alert alert-danger" role="alert">{{ form_errors(form.email) }}</div>
                         {% endif %}
                         {% if(form_errors(form.password.first)) %}
                             <div class="alert alert-danger" role="alert">{{ form_errors(form.password.first) }}</div>
                         {% endif %}
-                        {# {% if(form_errors(form.password.second)) %}
+                        {% if(form_errors(form.password.second)) %}
                             <div class="alert alert-danger" role="alert">{{ form_errors(form.password.second) }}</div>
-                        {% endif %} #}
+                        {% endif %}
+                        <div class="row mb-3">
+                            {{ form_label(form.name, null, {"label_attr": {"class": "col-md-4 col-form-label text-md-end" }}) }}
+                            <div class="col-md-6">
+                                {{ form_widget(form.name, {"attr": {"class": "form-control" } }) }}
+                            </div>
+                        </div>
                         <div class="row mb-3">
                             {{ form_label(form.email, null, {"label_attr": {"class": "col-md-4 col-form-label text-md-end" }}) }}
                             <div class="col-md-6">
