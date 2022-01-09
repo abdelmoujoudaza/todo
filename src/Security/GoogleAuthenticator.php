@@ -3,12 +3,14 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Event\UserCreateEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
@@ -22,14 +24,21 @@ class GoogleAuthenticator extends OAuth2Authenticator
     private $clientRegistry;
     private $entityManager;
     private $router;
-    private UserPasswordHasherInterface $userPasswordHasher;
+    private $userPasswordHasher;
+    private $eventDispatcher;
 
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router, UserPasswordHasherInterface $userPasswordHasher)
-    {
+    public function __construct(
+        ClientRegistry $clientRegistry,
+        EntityManagerInterface $entityManager,
+        RouterInterface $router,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->clientRegistry = $clientRegistry;
         $this->entityManager = $entityManager;
         $this->router = $router;
         $this->userPasswordHasher = $userPasswordHasher;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function supports(Request $request): ?bool
@@ -70,6 +79,14 @@ class GoogleAuthenticator extends OAuth2Authenticator
                     ->setGoogleAccessToken($accessToken)
                     ->setIsVerified(true);
                 $this->entityManager->persist($user);
+
+                if ( ! $this->entityManager->getUnitOfWork()->isInIdentityMap($user)) {
+                    $this->eventDispatcher->dispatch(
+                        new UserCreateEvent($user),
+                        UserCreateEvent::NAME
+                    );
+                }
+
                 $this->entityManager->flush();
 
                 return $user;
