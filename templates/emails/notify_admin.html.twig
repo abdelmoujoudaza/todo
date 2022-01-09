@@ -1,0 +1,46 @@
+{% apply inky_to_html %}
+    <style type="text/css">
+        body,
+        html, 
+        .body {
+            background: #f3f3f3 !important;
+        }
+
+        .container.header {
+            background: #f3f3f3;
+        }
+
+        .body-border {
+            border-top: 8px solid #663399;
+        }
+
+        .name, .email {
+            color: #663399
+        }
+    </style>
+
+    <spacer size="16"></spacer>
+
+    <container class="header">
+        <row>
+            <columns>
+                <h1 class="text-center">Bienvenue à notre nouvel collaborateur</h1>
+            </columns>
+        </row>
+    </container>
+
+    <container class="body-border">
+        <row>
+            <columns>
+                <spacer size="32"></spacer>
+
+                <h4>Une nouvelle collaborateur</h4>
+                <p>
+                Une nouvelle collaborateur s'est inscrite sur la plateforme sous le nom <span class="name">{{ user.getName() }}</span> et son adresse email
+                <a class="email" href="mailto:{{ user.getEmail() }}">{{ user.getEmail() }}</a>
+                </p>
+            </columns>
+        </row>
+        <spacer size="16"></spacer>
+    </container>
+{% endapply %}

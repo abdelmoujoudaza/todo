@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a89d53ae056f01585aa15b321aec8bce",
+    "content-hash": "142ec0ccc6d14a74f6987f03c0cc1842",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -2611,6 +2611,57 @@
             "time": "2021-03-04T21:12:06+00:00"
         },
         {
+            "name": "lorenzo/pinky",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lorenzo/pinky.git",
+                "reference": "2bc1a9d5696d6496df5d5682962929165a823e57"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lorenzo/pinky/zipball/2bc1a9d5696d6496df5d5682962929165a823e57",
+                "reference": "2bc1a9d5696d6496df5d5682962929165a823e57",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xsl": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/pinky.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jose Lorenzo Rodriguez",
+                    "email": "jose.zap@gmail.com"
+                }
+            ],
+            "description": "A Foundation for Emails (Inky) template transpiler",
+            "keywords": [
+                "email",
+                "foundation",
+                "inky",
+                "template",
+                "zurb"
+            ],
+            "support": {
+                "issues": "https://github.com/lorenzo/pinky/issues",
+                "source": "https://github.com/lorenzo/pinky/tree/1.0.5"
+            },
+            "time": "2019-09-16T21:23:31+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "2.3.5",
             "source": {
@@ -2708,6 +2759,105 @@
                 }
             ],
             "time": "2021-10-01T21:08:31+00:00"
+        },
+        {
+            "name": "omines/datatables-bundle",
+            "version": "0.5.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/omines/datatables-bundle.git",
+                "reference": "b8a16c365f9d8e97d1e890e8783249f979f0d7ca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/omines/datatables-bundle/zipball/b8a16c365f9d8e97d1e890e8783249f979f0d7ca",
+                "reference": "b8a16c365f9d8e97d1e890e8783249f979f0d7ca",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2",
+                "symfony/event-dispatcher": "^4.4|^5.0",
+                "symfony/framework-bundle": "^4.4|^5.0",
+                "symfony/options-resolver": "^4.4|^5.0",
+                "symfony/property-access": "^4.4|^5.0",
+                "symfony/translation": "^4.4|^5.0"
+            },
+            "require-dev": {
+                "doctrine/common": "^2.6|^3.0",
+                "doctrine/doctrine-bundle": "^2.3|^3.0",
+                "doctrine/orm": "^2.6.3",
+                "doctrine/persistence": "^1.3.4|^2.0",
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-pdo_sqlite": "*",
+                "ext-zip": "*",
+                "friendsofphp/php-cs-fixer": "^2.7",
+                "mongodb/mongodb": "^1.2",
+                "ocramius/package-versions": "^1.4",
+                "phpoffice/phpspreadsheet": "^1.6",
+                "ruflin/elastica": "^6.0",
+                "symfony/browser-kit": "^4.4|^5.0",
+                "symfony/css-selector": "^4.4|^5.0",
+                "symfony/dom-crawler": "^4.4|^5.0",
+                "symfony/intl": "^4.4|^5.0",
+                "symfony/mime": "^4.4|^5.0",
+                "symfony/phpunit-bridge": "^4.4|^5.0",
+                "symfony/twig-bundle": "^4.4|^5.0",
+                "symfony/var-dumper": "^4.4|^5.0",
+                "symfony/yaml": "^4.4|^5.0"
+            },
+            "suggest": {
+                "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",
+                "doctrine/orm": "For full automated integration with Doctrine entities",
+                "mongodb/mongodb": "For integration with MongoDB collections",
+                "phpoffice/phpspreadsheet": "To export the data from DataTables to Excel",
+                "ruflin/elastica": "For integration with Elasticsearch indexes",
+                "symfony/twig-bundle": "To use default Twig based rendering and TwigColumn"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Omines\\DataTablesBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Robbert Beesems",
+                    "email": "robbert.beesems@omines.com",
+                    "homepage": "https://omines.nl/"
+                },
+                {
+                    "name": "Niels Keurentjes",
+                    "email": "niels.keurentjes@omines.com",
+                    "homepage": "https://omines.nl/"
+                }
+            ],
+            "description": "Symfony DataTables Bundle with native Doctrine ORM, Elastica and MongoDB support",
+            "keywords": [
+                "bundle",
+                "datatable",
+                "datatables",
+                "doctrine",
+                "elastica",
+                "jquery",
+                "mongodb",
+                "orm",
+                "symfony"
+            ],
+            "support": {
+                "issues": "https://github.com/omines/datatables-bundle/issues",
+                "source": "https://github.com/omines/datatables-bundle/tree/0.5.5"
+            },
+            "time": "2021-06-29T08:12:37+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -9995,6 +10145,77 @@
                 }
             ],
             "time": "2022-01-03T21:04:59+00:00"
+        },
+        {
+            "name": "twig/inky-extra",
+            "version": "v3.3.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/inky-extra.git",
+                "reference": "b515e6f7c1fede76f9f507dbd1bb369f46aa726b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/inky-extra/zipball/b515e6f7c1fede76f9f507dbd1bb369f46aa726b",
+                "reference": "b515e6f7c1fede76f9f507dbd1bb369f46aa726b",
+                "shasum": ""
+            },
+            "require": {
+                "lorenzo/pinky": "^1.0.5",
+                "php": ">=7.1.3",
+                "twig/twig": "^2.7|^3.0"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "^4.4.9|^5.0.9|^6.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Twig\\Extra\\Inky\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "A Twig extension for the inky email templating engine",
+            "homepage": "https://twig.symfony.com",
+            "keywords": [
+                "email",
+                "emails",
+                "inky",
+                "twig"
+            ],
+            "support": {
+                "source": "https://github.com/twigphp/inky-extra/tree/v3.3.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/twig/twig",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-01-02T10:02:25+00:00"
         },
         {
             "name": "twig/string-extra",

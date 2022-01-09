@@ -10,3 +10,8 @@ import './styles/app.scss';
 
 // start the Stimulus application
 import './bootstrap';
+
+import 'jquery';
+global.$ = global.jQuery = $;
+import 'datatables.net-bs4';
+import 'datatables.net-select-bs4';

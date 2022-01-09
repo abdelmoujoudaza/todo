@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TodoController!{% endblock %}
+
+{% block body %}
+    <!-- Insert this where you want the table to appear -->
+    <div id="presidents">Loading...</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/datatables/js/datatables.js') }}" defer></script>
+    <script defer>
+        window.addEventListener("DOMContentLoaded", function () {
+            $('#presidents').initDataTables({{ datatable_settings(datatable) }});
+        });
+    </script>
+{% endblock %}

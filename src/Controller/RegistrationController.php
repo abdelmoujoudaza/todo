@@ -3,27 +3,29 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
+use App\Form\RegistrationFormType;
 use App\Security\UserAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class RegistrationController extends AbstractController
 {
     private EmailVerifier $emailVerifier;
+    private MailerInterface  $mailer;
 
-    public function __construct(EmailVerifier $emailVerifier)
+    public function __construct(EmailVerifier $emailVerifier, MailerInterface $mailer)
     {
         $this->emailVerifier = $emailVerifier;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -37,6 +39,7 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setName($form->get('name')->getData())
+                ->setIsVerified(true)
                 ->setPassword(
                     $userPasswordHasher->hashPassword(
                         $user,
@@ -47,13 +50,14 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-            //     (new TemplatedEmail())
-            //         ->from(new Address('mailer@your-domain.com', 'Mail Bot'))
-            //         ->to($user->getEmail())
-            //         ->subject('Please Confirm your Email')
-            //         ->htmlTemplate('registration/confirmation_email.html.twig')
-            // );
+            $email = (new TemplatedEmail())
+                ->subject('Bienvenue à notre nouvel collaborateur')
+                ->htmlTemplate('emails/notify_admin.html.twig')
+                ->context([
+                    'user' => $user,
+                ]);
+
+            $this->mailer->send($email);
 
             return $userAuthenticator->authenticateUser(
                 $user,
