@@ -5,59 +5,39 @@
 
 {% block body %}
     <div class="container h-100">
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% endif %}
     <div class="row align-items-center justify-content-center h-screen">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ 'Connexion' }}</div>
                 <div class="card-body">
-                    <form method="POST" action="{{ path('app_login') }}">
-                        {% if error %}
-                            <div class="alert alert-danger" role="alert">
-                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                    {% block login_form %}
+                        <form method="POST" action="{{ path('admin_login') }}">
+                            {% if error %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                                </div>
+                            {% endif %}
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                            <div class="row mb-3">
+                                <label for="email" class="col-md-4 col-form-label text-md-end">{{ 'Email' }} :</label>
+                                <div class="col-md-6">
+                                    <input id="email" type="email" class="form-control border border-black-50" name="email" value="{{ last_email }}" required autocomplete="email" autofocus>
+                                </div>
                             </div>
-                        {% endif %}
-                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ 'Email' }} :</label>
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control border border-black-50" name="email" value="{{ last_email }}" required autocomplete="email" autofocus>
+                            <div class="row mb-3">
+                                <label for="password" class="col-md-4 col-form-label text-md-end">{{ 'Mot de passe' }} :</label>
+                                <div class="col-md-6">
+                                    <input id="password" type="password" class="form-control border border-black-50" name="password" required autocomplete="current-password">
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ 'Mot de passe' }} :</label>
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control border border-black-50" name="password" required autocomplete="current-password">
+                            
+                            <div class="row mb-0">
+                                <div class="col-md-8 offset-md-4">
+                                    <button type="submit" class="btn btn-primary">{{ 'Se connecter' }}</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
-                                <a class="btn bg-white border border-black-50 rounded text-left w-100" href="{{ path('connect_google_start') }}">
-                                    <img src="{{ asset('icons/icon-google.png') }}" class="icon-google" />
-                                    {{ 'Sign in with Google' }}
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">{{ 'Se connecter' }}</button>
-                            </div>
-                        </div>
-                        {#
-                        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-                        See https://symfony.com/doc/current/security/remember_me.html
-
-                        <div class="checkbox mb-3">
-                            <label>
-                                <input type="checkbox" name="_remember_me"> Remember me
-                            </label>
-                        </div>
-                    #}
-                    </form>
+                        </form>
+                    {% endblock %}
                 </div>
             </div>
         </div>

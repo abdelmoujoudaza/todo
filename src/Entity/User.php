@@ -16,6 +16,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const ROLE_USER = 'ROLE_USER';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -45,9 +47,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default"=true})
      */
-    private $isVerified = false;
+    private $isVerified = true;
 
     /**
      * @ORM\Column(name="google_id", type="string", length=255, nullable=true, options={"default"="NULL"})
@@ -63,6 +65,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\OneToMany(targetEntity=UserTodo::class, mappedBy="user")
      */
     private $userTodos;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default"=true})
+     */
+    private $isActive = true;
 
     public function __construct()
     {
@@ -111,8 +118,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = self::ROLE_USER;
 
         return array_unique($roles);
     }
@@ -233,6 +239,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

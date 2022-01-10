@@ -96,7 +96,7 @@ class GoogleAuthenticator extends OAuth2Authenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        $targetUrl = $this->router->generate('sonata_admin_dashboard');
+        $targetUrl = $this->router->generate('todo');
 
         return new RedirectResponse($targetUrl);
     }

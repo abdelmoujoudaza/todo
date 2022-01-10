@@ -20,9 +20,23 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
-                                    
+
     App\EventListener\UserCreateSubscriber:
         tags:
             - { name: kernel.event_subscriber, event: user.create }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    admin.user:
+        class: App\Admin\UserAdmin
+        arguments: [~, App\Entity\User, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: User, label: User }
+        public: true
+
+    admin.admin:
+        class: App\Admin\AdminAdmin
+        arguments: [~, App\Entity\Admin, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: Admin }
+        public: true
