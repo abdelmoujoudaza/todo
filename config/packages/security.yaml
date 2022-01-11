@@ -8,7 +8,6 @@ security:
         App\Entity\Admin:
             algorithm: auto
 
-
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
@@ -52,6 +51,22 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+
+    role_hierarchy:
+        ROLE_USER_PANEL_EDITOR:
+            - ROLE_USER_PANEL_LIST
+            - ROLE_USER_PANEL_EDIT
+        ROLE_ADMIN_PANEL_EDITOR:
+            - ROLE_ADMIN_PANEL_LIST
+            - ROLE_ADMIN_PANEL_EDIT
+            - ROLE_ADMIN_PANEL_CREATE
+        ROLE_ADMIN_PANEL_ALL:
+            - ROLE_ADMIN_PANEL_ALL
+
+        ROLE_ADMIN:             [ROLE_USER_PANEL_EDITOR, ROLE_ADMIN_PANEL_EDITOR]
+        ROLE_SUPER_ADMIN:       [ROLE_ADMIN, ROLE_ADMIN_PANEL_ALL]
+    access_decision_manager:
+        strategy: unanimous
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

@@ -13,11 +13,11 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
 
-final class UserAdmin extends AbstractAdmin
+final class UserPanel extends AbstractAdmin
 {
     protected function configureRoutes(RouteCollectionInterface $collection): void
     {
-        $collection->clearExcept(['list']);
+        $collection->clearExcept(['list', 'show']);
     }
 
     protected function configureDatagridFilters(DatagridMapper $filter): void

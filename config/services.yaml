@@ -27,16 +27,16 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    admin.user:
-        class: App\Admin\UserAdmin
+    user.panel:
+        class: App\Admin\UserPanel
         arguments: [~, App\Entity\User, ~]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: User, label: User }
+            - { name: sonata.admin, manager_type: orm, group: Utilisateurs, label: Collaborateurs }
         public: true
 
-    admin.admin:
-        class: App\Admin\AdminAdmin
-        arguments: [~, App\Entity\Admin, ~]
+    admin.panel:
+        class: App\Admin\AdminPanel
+        arguments: [~, App\Entity\Admin, App\Controller\AdminCRUDController]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: Admin }
+            - { name: sonata.admin, manager_type: orm, group: Utilisateurs, label: Administrateurs }
         public: true
