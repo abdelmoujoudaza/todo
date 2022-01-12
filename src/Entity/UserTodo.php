@@ -30,7 +30,7 @@ class UserTodo
 
     /**
      * @ORM\ManyToOne(targetEntity=Todo::class, inversedBy="todoUsers")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $todo;
 

@@ -2,14 +2,20 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\Todo;
 use App\Entity\User;
+use Doctrine\ORM\Query;
 use App\Entity\UserTodo;
+use App\Form\TodoFormType;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormInterface;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\Column\TwigColumn;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
@@ -22,27 +28,64 @@ class TodoController extends AbstractController
     /**
      * @Route("/todo", name="todo")
      */
-    public function index(Request $request, DataTableFactory $dataTableFactory): Response
+    public function index(Request $request, DataTableFactory $dataTableFactory, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        $todo = new Todo();
+        $form = $this->createForm(TodoFormType::class, $todo)->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $now  = new DateTime();
+
+            $todo->setTitle($form->get('title')->getData())
+                ->setCreatedAt($now)
+                ->setUpdatedAt($now);
+
+            $entityManager->persist($todo);
+
+            $userTodo = new UserTodo();
+
+            $userTodo->setUser($user)
+                ->setTodo($todo)
+                ->setIsOwner(true);
+
+            $entityManager->persist($userTodo);
+
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'Votre liste de tâches a été créée avec succès.');
+            
+            return $this->redirect($this->generateUrl('todo_show', ['id' => $todo->getId()]));
+        }
+
         $table = $dataTableFactory->create()
-            ->add('title', TextColumn::class)
-            ->add('name', TextColumn::class)
-            ->add('createdAt', DateTimeColumn::class)
+            ->add('title', TwigColumn::class, [
+                'label' => 'TODO LIST',
+                'className' => 'show-todo',
+                'template'  => 'components/link.html.twig',
+            ])
+            ->add('name', TextColumn::class, ['label' => 'Créateur', 'field' => 'User.name'])
+            ->add('createdAt', DateTimeColumn::class, ['label' => 'Date de création', 'format' => 'd/m/Y'])
+            ->add('id', TwigColumn::class, [
+                'label'     => 'Actions',
+                'className' => 'actions',
+                'template'  => 'components/actions.html.twig',
+            ])
             ->createAdapter(ORMAdapter::class, [
-                'entity' => Todo::class,
-                'query'  => function (QueryBuilder $builder) {
+                'entity'  => Todo::class,
+                'hydrate' => Query::HYDRATE_ARRAY,
+                'query'   => function (QueryBuilder $builder) {
                     $builder
-                        ->select('todo')
-                        ->addSelect('user.name')
-                        ->from(Todo::class, 'todo')
-                        ->innerJoin(UserTodo::class, 'userTodo', Join::WITH, 'userTodo.todo = todo.id')
-                        ->innerJoin(User::class, 'user', Join::WITH, 'userTodo.user = user.id')
-                        ->groupBy('todo');
+                        ->select('Todo.id, Todo.title, Todo.createdAt, UserTodo.isOwner, User.name')
+                        ->from(Todo::class, 'Todo')
+                        ->innerJoin(UserTodo::class, 'UserTodo', Join::WITH, 'UserTodo.todo = Todo.id')
+                        ->innerJoin(User::class, 'User', Join::WITH, 'UserTodo.user = User.id');
                 },
                 'criteria' => [
-                    function (QueryBuilder $builder) {
-                        $builder->andWhere('userTodo.isOwner = :isOwner')
-                            ->setParameter('isOwner', true);
+                    function (QueryBuilder $builder) use ($user) {
+                        $builder
+                            ->andWhere('User = :user')
+                            ->setParameter('user', $user);
                     },
                     new SearchCriteriaProvider(),
                 ],
@@ -53,6 +96,68 @@ class TodoController extends AbstractController
             return $table->getResponse();
         }
 
-        return $this->render('todo/index.html.twig', ['datatable' => $table]);
+        return $this->render('todo/index.html.twig', ['table' => $table, 'form' => $form->createView()]);
+    }
+
+    /**
+     * @Route("/todo/{id<\d+>}", name="todo_show")
+     */
+    public function show(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        dump('yeap is here');
+        return $this->redirectToRoute('todo');
+    }
+
+    /**
+     * @Route("/todo/create", name="todo_create", methods={"POST"})
+     */
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        $todo = new Todo();
+        $now  = new DateTime();
+
+        $todo->setTitle($request->get('title'))
+            ->setCreatedAt($now)
+            ->setUpdatedAt($now);
+
+        $entityManager->persist($todo);
+
+        $userTodo = new UserTodo();
+
+        $userTodo->setUser($user)
+            ->setTodo($todo)
+            ->setIsOwner(true);
+
+        $entityManager->persist($userTodo);
+
+        $entityManager->flush();
+        
+        $this->addFlash('success', 'Votre liste de tâches a été créée avec succès.');
+        
+        return $this->redirect($this->generateUrl('todo_show', ['id' => $todo->getId()]));
+    }
+
+    /**
+     * @Route("/todo/{id<\d+>}/delete", name="todo_delete", methods={"GET", "DELETE"})
+     */
+    public function delete(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        $todo = $entityManager->getRepository(Todo::class)->find($id);
+
+        if ( ! $todo) {
+            $this->addFlash('danger', 'Aucune tâche trouvée.');
+        } else {
+            if ($entityManager->getRepository(Todo::class)->checkIsOwner($todo, $user)) {
+                $entityManager->remove($todo);
+                $entityManager->flush();
+                $this->addFlash('success', 'votre liste de tâches a été supprimée avec succès.');
+            } else {
+                $this->addFlash('danger', "Vous n'avez pas la permission de supprimer ceci.");
+            }
+        }
+
+        return $this->redirectToRoute('todo');
     }
 }

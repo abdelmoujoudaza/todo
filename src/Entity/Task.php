@@ -29,7 +29,7 @@ class Task
 
     /**
      * @ORM\ManyToOne(targetEntity=Todo::class, inversedBy="tasks")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $todo;
 

@@ -2,10 +2,12 @@
 
 namespace App\EventListener;
 
-use App\Event\UserCreateEvent;
+use App\Entity\User;
+use Doctrine\ORM\Events;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 
 class UserCreateSubscriber implements EventSubscriberInterface
 {
@@ -16,23 +18,26 @@ class UserCreateSubscriber implements EventSubscriberInterface
         $this->mailer = $mailer;
     }
 
-    public static function getSubscribedEvents(): array
+    public function getSubscribedEvents(): array
     {
         return [
-            UserCreateEvent::NAME => [
-                ['notifyAdmin', 1],
-            ],
+            Events::postPersist,
         ];
     }
 
-    public function notifyAdmin(UserCreateEvent $event): void
+    public function postPersist(LifecycleEventArgs $args): void
     {
-        $user = $event->getUser();
+        $entity = $args->getObject();
+
+        if ( ! $entity instanceof User) {
+            return;
+        }
+
         $email = (new TemplatedEmail())
             ->subject('Bienvenue à notre nouvel collaborateur')
             ->htmlTemplate('emails/notify_admin.html.twig')
             ->context([
-                'user' => $user,
+                'user' => $entity,
             ]);
 
         $this->mailer->send($email);

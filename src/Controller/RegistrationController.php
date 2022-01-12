@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Event\UserCreateEvent;
 use App\Security\EmailVerifier;
 use App\Form\RegistrationFormType;
 use App\Security\UserAuthenticator;
@@ -11,7 +10,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
@@ -20,12 +18,10 @@ use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 class RegistrationController extends AbstractController
 {
     private $emailVerifier;
-    private $eventDispatcher;
 
-    public function __construct(EmailVerifier $emailVerifier, EventDispatcherInterface $eventDispatcher)
+    public function __construct(EmailVerifier $emailVerifier)
     {
         $this->emailVerifier = $emailVerifier;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -49,11 +45,6 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-
-            $this->eventDispatcher->dispatch(
-                new UserCreateEvent($user),
-                UserCreateEvent::NAME
-            );
 
             return $userAuthenticator->authenticateUser(
                 $user,

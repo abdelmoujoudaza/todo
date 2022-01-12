@@ -2,6 +2,11 @@
 
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
 
+@import "@fortawesome/fontawesome-free/scss/fontawesome";
+@import "@fortawesome/fontawesome-free/scss/brands";
+@import "@fortawesome/fontawesome-free/scss/regular";
+@import "@fortawesome/fontawesome-free/scss/solid";
+
 .h-screen {
     height: 100vh;
 }

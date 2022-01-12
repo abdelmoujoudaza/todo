@@ -26,18 +26,20 @@ class TodoRepository extends ServiceEntityRepository
     //  * @return Todo[] Returns an array of Todo objects
     //  */
 
-    public function withCreater()
+    public function checkIsOwner(Todo $todo, User $user)
     {
         return $this->createQueryBuilder('todo')
-        ->select("todo.*, user.name")
+            ->select("userTodo")
             ->innerJoin(UserTodo::class, 'userTodo', Join::WITH, 'userTodo.todo = todo.id')
             ->innerJoin(User::class, 'user', Join::WITH, 'userTodo.user = user.id')
-            ->where('userTodo.is_admin = :is_admin')
-            ->setParameter('is_admin', true)
-            ->setMaxResults(10)
+            ->where('userTodo.isOwner = :isOwner')
+            ->setParameter('isOwner', true)
+            ->andWhere('todo = :todo')
+            ->setParameter('todo', $todo)
+            ->andWhere('user = :user')
+            ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getOneOrNullResult();
     }
 
     // /**
