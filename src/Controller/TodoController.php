@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use DateTime;
+use App\Entity\Task;
 use App\Entity\Todo;
 use App\Entity\User;
 use Doctrine\ORM\Query;
 use App\Entity\UserTodo;
+use App\Form\TaskFormType;
 use App\Form\TodoFormType;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr\Join;
@@ -14,6 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
 use Symfony\Component\HttpFoundation\Response;
@@ -102,10 +105,63 @@ class TodoController extends AbstractController
     /**
      * @Route("/todo/{id<\d+>}", name="todo_show")
      */
-    public function show(Request $request, EntityManagerInterface $entityManager): Response
+    public function show(int $id, Request $request, DataTableFactory $dataTableFactory, EntityManagerInterface $entityManager): Response
     {
-        dump('yeap is here');
-        return $this->redirectToRoute('todo');
+        $task = new Task();
+        $user = $this->getUser();
+        $todo = $entityManager->getRepository(Todo::class)->find($id);
+        $form = $this->createForm(TaskFormType::class, $task)->handleRequest($request);
+
+        if ( ! $todo) {
+            $this->addFlash('danger', 'Aucune liste de tâches trouvée.');
+            return $this->redirectToRoute('todo');
+        } else if ( ! $entityManager->getRepository(Todo::class)->checkHasPermission($todo, $user)) {
+            $this->addFlash('danger', "Vous n'avez pas la permission de coiper ceci.");
+            return $this->redirectToRoute('todo');
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $task->setBody($form->get('body')->getData());
+            $todo->addTask($task);
+
+            $entityManager->persist($task);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre liste de tâches a été créée avec succès.');
+        }
+
+        $table = $dataTableFactory->create()
+            ->add('completed', BoolColumn::class, [
+                'trueValue'  => 'yes',
+                'falseValue' => 'no',
+            ])
+            ->add('body', TextColumn::class)
+            ->add('id', TextColumn::class)
+            ->createAdapter(ORMAdapter::class, [
+                'entity'  => Task::class,
+                'hydrate' => Query::HYDRATE_ARRAY,
+                'query'   => function (QueryBuilder $builder) {
+                    $builder
+                        ->select('Task')
+                        ->from(Task::class, 'Task')
+                        ->innerJoin(Todo::class, 'Todo', Join::WITH, 'Task.todo = Todo.id');
+                },
+                'criteria' => [
+                    function (QueryBuilder $builder) use ($todo) {
+                        $builder
+                            ->andWhere('Todo = :todo')
+                            ->setParameter('todo', $todo);
+                    },
+                    new SearchCriteriaProvider(),
+                ],
+            ])
+            ->handleRequest($request);
+
+        if ($table->isCallback()) {
+            return $table->getResponse();
+        }
+
+        return $this->render('todo/show.html.twig', ['table' => $table, 'form' => $form->createView()]);
     }
 
     /**
@@ -117,7 +173,7 @@ class TodoController extends AbstractController
         $todo = $entityManager->getRepository(Todo::class)->find($id);
 
         if ( ! $todo) {
-            $this->addFlash('danger', 'Aucune tâche trouvée.');
+            $this->addFlash('danger', 'Aucune liste de tâches trouvée.');
         } else {
             if ($entityManager->getRepository(Todo::class)->checkHasPermission($todo, $user)) {
                 $todo = clone $todo;
@@ -187,7 +243,7 @@ class TodoController extends AbstractController
         $todo = $entityManager->getRepository(Todo::class)->find($id);
 
         if ( ! $todo) {
-            $this->addFlash('danger', 'Aucune tâche trouvée.');
+            $this->addFlash('danger', 'Aucune liste de tâches trouvée.');
         } else {
             if ($entityManager->getRepository(Todo::class)->checkIsOwner($todo, $user)) {
                 $entityManager->remove($todo);
