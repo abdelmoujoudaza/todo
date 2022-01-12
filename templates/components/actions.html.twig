@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-around">
-    <a href="{{ path('todo_delete', {'id': value}) }}"><i class="far fa-copy text-dark"></i></a>
+    <a href="{{ path('todo_clone', {'id': value}) }}"><i class="far fa-copy text-dark"></i></a>
     {% if (row.isOwner) %}
         <a href="{{ path('todo_delete', {'id': value}) }}"><i class="fas fa-trash text-dark"></i></a>
     {% endif %}

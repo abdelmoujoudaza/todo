@@ -28,12 +28,12 @@ class Todo
     private $title;
 
     /**
-     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="todo")
+     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="todo", cascade={"persist"})
      */
     private $tasks;
 
     /**
-     * @ORM\OneToMany(targetEntity=UserTodo::class, mappedBy="todo")
+     * @ORM\OneToMany(targetEntity=UserTodo::class, mappedBy="todo", cascade={"persist"})
      */
     private $todoUsers;
 
@@ -118,5 +118,20 @@ class Todo
         }
 
         return $this;
+    }
+
+    public function __clone() {
+        if ($this->id) {
+            $this->id        = null;
+            $this->todoUsers = new ArrayCollection();
+            $tasks           = $this->getTasks();
+            $this->tasks     = new ArrayCollection();
+
+            foreach ($tasks as $task) {
+                $taskClone = clone $task;
+                $taskClone->setTodo($this);
+                $this->addTask($taskClone);
+            }
+        }
     }
 }

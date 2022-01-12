@@ -29,7 +29,7 @@ class UserTodo
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Todo::class, inversedBy="todoUsers")
+     * @ORM\ManyToOne(targetEntity=Todo::class, inversedBy="todoUsers", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $todo;

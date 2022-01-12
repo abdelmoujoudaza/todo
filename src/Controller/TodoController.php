@@ -52,10 +52,10 @@ class TodoController extends AbstractController
             $entityManager->persist($userTodo);
 
             $entityManager->flush();
-            
+
             $this->addFlash('success', 'Votre liste de tâches a été créée avec succès.');
-            
-            return $this->redirect($this->generateUrl('todo_show', ['id' => $todo->getId()]));
+
+            return $this->redirectToRoute('todo_show', ['id' => $todo->getId()]);
         }
 
         $table = $dataTableFactory->create()
@@ -109,6 +109,46 @@ class TodoController extends AbstractController
     }
 
     /**
+     * @Route("/todo/{id<\d+>}/clone", name="todo_clone", methods={"GET", "POST"})
+     */
+    public function clone(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        $todo = $entityManager->getRepository(Todo::class)->find($id);
+
+        if ( ! $todo) {
+            $this->addFlash('danger', 'Aucune tâche trouvée.');
+        } else {
+            if ($entityManager->getRepository(Todo::class)->checkHasPermission($todo, $user)) {
+                $todo = clone $todo;
+                $now  = new DateTime();
+
+                $todo->setCreatedAt($now)
+                    ->setUpdatedAt($now);
+
+                $entityManager->persist($todo);
+
+                $userTodo = new UserTodo();
+
+                $userTodo->setUser($user)
+                    ->setTodo($todo)
+                    ->setIsOwner(true);
+
+                $entityManager->persist($userTodo);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Votre liste de tâches a été créée avec succès.');
+
+                return $this->redirectToRoute('todo_show', ['id' => $todo->getId()]);
+            } else {
+                $this->addFlash('danger', "Vous n'avez pas la permission de coiper ceci.");
+            }
+        }
+
+        return $this->redirectToRoute('todo');
+    }
+
+    /**
      * @Route("/todo/create", name="todo_create", methods={"POST"})
      */
     public function create(Request $request, EntityManagerInterface $entityManager): Response
@@ -132,10 +172,10 @@ class TodoController extends AbstractController
         $entityManager->persist($userTodo);
 
         $entityManager->flush();
-        
+
         $this->addFlash('success', 'Votre liste de tâches a été créée avec succès.');
-        
-        return $this->redirect($this->generateUrl('todo_show', ['id' => $todo->getId()]));
+
+        return $this->redirect('todo_show', ['id' => $todo->getId()]);
     }
 
     /**

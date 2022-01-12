@@ -22,9 +22,19 @@ class TodoRepository extends ServiceEntityRepository
         parent::__construct($registry, Todo::class);
     }
 
-    // /**
-    //  * @return Todo[] Returns an array of Todo objects
-    //  */
+    public function checkHasPermission(Todo $todo, User $user)
+    {
+        return $this->createQueryBuilder('todo')
+            ->select("userTodo")
+            ->innerJoin(UserTodo::class, 'userTodo', Join::WITH, 'userTodo.todo = todo.id')
+            ->innerJoin(User::class, 'user', Join::WITH, 'userTodo.user = user.id')
+            ->andWhere('todo = :todo')
+            ->setParameter('todo', $todo)
+            ->andWhere('user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
     public function checkIsOwner(Todo $todo, User $user)
     {

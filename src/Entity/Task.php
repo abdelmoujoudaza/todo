@@ -28,7 +28,7 @@ class Task
     private $completed = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Todo::class, inversedBy="tasks")
+     * @ORM\ManyToOne(targetEntity=Todo::class, inversedBy="tasks", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $todo;
@@ -72,5 +72,12 @@ class Task
         $this->todo = $todo;
 
         return $this;
+    }
+
+    public function __clone() {
+        if ($this->id) {
+            $this->id   = null;
+            $this->todo = null;
+        }
     }
 }
