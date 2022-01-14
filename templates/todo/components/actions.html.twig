@@ -1,0 +1,14 @@
+<div class="d-flex justify-content-around">
+    <div>
+        <form action="{{ path('todo_clone', {'todo': value}) }}" method="POST">
+            <button class="bg-transparent border-0">
+                <i class="far fa-copy text-dark"></i>
+            </button>
+        </form>
+    </div>
+    {% if (row.isOwner) %}
+        <div>
+            <a href="{{ path('todo_delete', {'todo': value}) }}"><i class="fas fa-trash text-dark"></i></a>
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,5 @@
+<div class="d-flex justify-content-around">
+    {% if (row.isOwner) %}
+        <a href="{{ path('task_delete', {'task': value}) }}"><i class="fas fa-trash text-dark"></i></a>
+    {% endif %}
+</div>
