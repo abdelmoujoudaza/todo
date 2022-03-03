@@ -32,7 +32,7 @@ class TaskController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('todo_show', ['id' => $task->getTodo()->getId()]);
+        return $this->redirectToRoute('todo_show', ['todo' => $task->getTodo()->getId()]);
     }
 
     /**
@@ -55,6 +55,6 @@ class TaskController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('todo_show', ['id' => $task->getTodo()->getId()]);
+        return $this->redirectToRoute('todo_show', ['todo' => $task->getTodo()->getId()]);
     }
 }

@@ -58,7 +58,7 @@ class TodoController extends AbstractController
 
             $this->addFlash('success', 'Votre liste de tâches a été créée avec succès.');
 
-            return $this->redirectToRoute('todo_show', ['id' => $todo->getId()]);
+            return $this->redirectToRoute('todo_show', ['todo' => $todo->getId()]);
         }
 
         $table = $dataTableFactory->create()
@@ -102,7 +102,7 @@ class TodoController extends AbstractController
     }
 
     /**
-     * @Route("/todo/{id<\d+>}", name="todo_show")
+     * @Route("/todo/{todo<\d+>}", name="todo_show")
      */
     public function show(Todo $todo, Request $request, DataTableFactory $dataTableFactory, EntityManagerInterface $entityManager): Response
     {
@@ -200,7 +200,7 @@ class TodoController extends AbstractController
 
                 $this->addFlash('success', 'Votre liste de tâches a été créée avec succès.');
 
-                return $this->redirectToRoute('todo_show', ['id' => $todo->getId()]);
+                return $this->redirectToRoute('todo_show', ['todo' => $todo->getId()]);
             } else {
                 $this->addFlash('danger', "Vous n'avez pas la permission de coiper cette liste de tâches.");
             }

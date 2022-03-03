@@ -4,12 +4,12 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use Faker\Generator;
-use App\Entity\User;
+use App\Entity\Admin;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture
+class AdminFixtures extends Fixture
 {
     protected Generator $faker;
     protected UserPasswordHasherInterface $hasher;
@@ -22,20 +22,14 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        for ($index = 0; $index < 4; $index++) {
-            $user     = new User();
-            $password = $this->hasher->hashPassword($user, 'password');
+        $admin    = new Admin();
+        $password = $this->hasher->hashPassword($admin, 'password');
 
-            $user->setName($this->faker->name)
-                ->setEmail($this->faker->email)
-                ->setPassword($password)
-                ->setIsVerified(true)
-                ->setRoles([User::ROLE_USER]);
+        $admin->setEmail('admin@test.com')
+            ->setPassword($password)
+            ->setRoles([Admin::ROLE_SUPER_ADMIN]);
 
-            $this->addReference("user.{$index}", $user);
-
-            $manager->persist($user);
-        }
+        $manager->persist($admin);
 
         $manager->flush();
     }
